@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;600&display=swap');
+html {
+    font-size: 15px; /* Resets the base font size to the default browser size */
+}
+p {
+    margin: 0px !important;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fafafa;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.main {
+    gap: 30px;
+    flex-direction: column;
+    padding: 0px 10px 0px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: fit-content;
+    height: 610px;
+    background-color: #fafafa;
+    border-radius: 3px;
+}
+@media screen and (min-width: 1024px) {
+    .top3 {
+        width: 40%;
+    }
+    body {
+        overflow: hidden;
+        margin: 0px;
+    }
+}
+@media screen and (max-width: 1023px) {
+
+    body {
+        overflow-x: hidden;
+        align-items: flex-start;
+        height: 100vh;
+        margin: 0px;
+    }
+    .con {
+        height: fit-content !important;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .con1, .con2, .con3 {
+        min-width:200px;
+        min-height: fit-content;
+    }
+    .main {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        height: fit-content;
+    }
+
+    .main {
+        margin-bottom: 8px;
+        width: 320px;
+    }
+    .top {
+        height: fit-content !important;
+    }
+    .top3 {
+        width: 65% !important;
+    }
+    .top1, .top2 {
+        font-size: 1.1em !important;
+    }
+    .top3 {
+        text-align: center;
+        font-size: 0.7em !important;
+    }
+}
+.top {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 145px;
+    gap: 3px;
+    flex-direction: column;
+}
+.top1 {
+    color: hsl(229, 6%, 66%);
+    font-size: 1.25rem;
+    font-weight: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+}
+.top2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    display: flex;
+    color: hsl(234, 12%, 34%);
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: fit-content;
+}
+.top3 {
+    color: hsl(229, 6%, 66%);
+    font-size: 1rem;
+    font-weight: 400;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 60%;
+    height: fit-content;
+}
+.con2 {
+    flex-direction: column;
+    gap: 30px;
+}
+.con {
+    gap: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    width: 100%;
+    margin-bottom: 40px;
+}
+.con1, .con2, .con3 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    height: fit-content;
+}
+.card1, .card2, .card3, .card4 {
+    width: 300px;
+    height: 210px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.card1 {
+    border-top: 4px solid #00c9b7;
+}
+.card2 {
+    border-top: 4px solid #f44336;
+}
+.card3 {
+    border-top: 4px solid #ffeb3b;
+}
+.card4 {
+    border-top: 4px solid #2196f3;
+}
+.t {
+    padding-top: 20px;
+    padding-left: 25px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: hsl(234, 12%, 34%);
+
+}
+.e {
+    padding-top: 10px;
+    padding-left: 25px;
+    width: 90%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: hsl(229, 6%, 66%);
+}
+.image {
+    padding-top: 30px;
+    padding-right: 15px;
+    width: 90%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: fit-content;
+}
