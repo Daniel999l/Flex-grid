@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       const out = await uni('/quote', {
         type: 'EXACT_INPUT', swapper: wallet, tokenIn, tokenOut,
         tokenInChainId: CHAIN_ID, tokenOutChainId: CHAIN_ID, amount,
-        protocols: ['V2', 'V3', 'V4'], routingPreference: 'BEST_PRICE', autoSlippage: 'DEFAULT',
+        protocols: ['V2', 'V3', 'V4'], routingPreference: 'BEST_PRICE', slippageTolerance: 1,
       });
       if (out.routing && out.routing !== 'CLASSIC') return send(res, 409, { error: 'No direct route for this trade right now.' });
       return send(res, 200, { quote: out.quote, permitData: out.permitData || null, routing: out.routing });
