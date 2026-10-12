@@ -24,8 +24,9 @@ const root = process.cwd();
 
 createServer(async (req, res) => {
   const path = new URL(req.url, 'http://x').pathname;
+  if (path === '/health') return res.end('ok');
   if (routes[path]) return (await routes[path]()).default(req, res);
-  if (path.startsWith('/api/') || path.startsWith('/lib/') || path.startsWith('/.')) {
+  if (/^\/(api|lib|node_modules|brand)(\/|$)|^\/\.|^\/(server\.js|package(-lock)?\.json)$/.test(path)) {
     res.statusCode = 404;
     return res.end('Not found');
   }
@@ -34,9 +35,10 @@ createServer(async (req, res) => {
     if (!file.startsWith(root)) throw new Error('outside root');
     if ((await stat(file)).isDirectory()) file = join(file, 'index.html');
     res.setHeader('content-type', types[extname(file)] || 'application/octet-stream');
+    if (file.includes('/assets/')) res.setHeader('cache-control', 'public, max-age=3600');
     res.end(await readFile(file));
   } catch {
     res.statusCode = 404;
     res.end('Not found');
   }
-}).listen(process.env.PORT || 3000, () => console.log(`quiver on http://localhost:${process.env.PORT || 3000}`));
+}).listen(Number(process.env.PORT) || 3000, '0.0.0.0', () => console.log(`quiver on http://localhost:${process.env.PORT || 3000}`));
