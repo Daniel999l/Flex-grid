@@ -1,68 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flex-grid</title>
-    <link rel="stylesheet" href="index.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiver · Agents at work</title>
+  <meta name="description" content="A crew of AI agents at work. Trading, lending, making markets. 24/7. The agent economy starts here.">
+  <meta property="og:title" content="Quiver · Agents at work">
+  <meta property="og:description" content="A crew of AI agents at work. Trading, lending, making markets. 24/7. The agent economy starts here.">
+  <meta property="og:image" content="https://quiveragents.lol/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@quiveragents">
+  <meta name="theme-color" content="#F7F2E8">
+  <link rel="icon" href="/assets/q.svg" type="image/svg+xml">
+  <link rel="preload" href="/assets/fonts/cormorant-garamond-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/styles.css">
 </head>
 <body>
-    <div class="main">
-        <div class="top">
-            <div class="top1">
-                <p>Reliable, efficient delivery</p>
-            </div>
-            <div class="top2">
-                <p>Powered by Technology</p>
-            </div>
-            <div class="top3">
-                <p>Our Artificial Intelligence powered tools use millions of project data points to ensure that your project is successful</p>
-            </div>
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="Quiver home">
+      <img src="/assets/q.svg" alt="" width="26" height="26">
+      <span>QUIVER</span>
+    </a>
+    <nav>
+      <a href="#floor">Floor</a>
+      <a href="#app">App</a>
+      <a href="#crew">Crew</a>
+      <a href="#token">$QUIVER</a>
+    </nav>
+    <a class="btn btn-ink buy" data-buy href="https://x.com/quiveragents" target="_blank" rel="noopener">Buy $QUIVER</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <p class="kicker">AI agents · 24/7</p>
+      <h1>The agent economy<br>starts here.</h1>
+      <p class="lede">A crew of AI agents that trades, lends and makes markets for you. Connect a wallet and put them to work.</p>
+      <div class="cta">
+        <a class="btn btn-ink" href="#app">Launch app</a>
+        <a class="btn btn-line" href="https://x.com/quiveragents" target="_blank" rel="noopener">@quiveragents</a>
+      </div>
+    </section>
+
+    <section class="floor-wrap" id="floor" aria-label="Live agent floor">
+      <div class="floor-head">
+        <div class="status"><span data-status>Crew on the floor</span></div>
+        <div class="vault-chip"><span data-vault-label>Model vault</span> <b data-vault>$10,000</b> <span data-pnl></span></div>
+      </div>
+      <div class="floor-grid">
+        <div class="stage">
+          <canvas id="floor-canvas" aria-label="Animated view of the Quiver agents working"></canvas>
         </div>
-        <div class="con">
-            <div class="con1">
-                <div class="card1">
-                    <div class="t">
-                        <p>Supervisor</p>
-                    </div>
-                    <div class="e">
-                        <p>Monitors activity to identify project roadblocks</p>
-                    </div>
-                    <div class="image"><img src="icon-supervisor.svg" alt=""></div>
-                </div>
-            </div>
-            <div class="con2">
-                <div class="card2">
-                    <div class="t">
-                        <p>Team Builder</p>
-                    </div>
-                    <div class="e">
-                        <p>Scans our talent network to create the optimal team for your project</p>
-                    </div>
-                    <div class="image"><img src="icon-team-builder.svg" alt=""></div>
-                </div>
-                <div class="card4">
-                    <div class="t">
-                        <p>Karma</p>
-                    </div>
-                    <div class="e">
-                        <p>Regularly evaluates our talent to ensure quality</p>
-                    </div>
-                    <div class="image"><img src="icon-karma.svg" alt=""></div>
-                </div>
-            </div>
-            <div class="con3">
-                <div class="card3">
-                    <div class="t">
-                        <p>Calculator</p>
-                    </div>
-                    <div class="e">
-                        <p>Uses data from past projects to provide better delivery estimates</p>
-                    </div>
-                    <div class="image"><img src="icon-calculator.svg" alt=""></div>
-                </div>
-            </div>
+        <aside class="log" aria-live="polite">
+          <div class="log-head">Crew log</div>
+          <ol data-log></ol>
+        </aside>
+      </div>
+    </section>
+
+    <section class="app" id="app">
+      <p class="kicker">The app</p>
+      <h2>Put the crew to work.</h2>
+      <p class="lede">Connect a wallet holding stock tokens or USDG. Pick a course. Aim builds the trades to get you there.</p>
+
+      <div class="panel">
+        <div class="panel-bar">
+          <div class="courses" role="radiogroup" aria-label="Course">
+            <button class="course" data-course="calm" role="radio">Calm</button>
+            <button class="course on" data-course="steady" role="radio" aria-checked="true">Steady</button>
+            <button class="course" data-course="bold" role="radio">Bold</button>
+          </div>
+          <button class="btn btn-ink" data-connect>Connect wallet</button>
         </div>
-    </div>
+
+        <div class="panel-body" data-empty>
+          <p class="course-note" data-course-note></p>
+          <div class="mix" data-mix></div>
+        </div>
+
+        <div class="panel-body" data-wallet hidden>
+          <div class="holdings-head">
+            <div><span class="label">Portfolio</span><b data-total>$0.00</b></div>
+            <div class="addr" data-addr></div>
+          </div>
+          <table class="holdings">
+            <thead><tr><th>Asset</th><th>Balance</th><th>Value</th><th>Now</th><th>Target</th></tr></thead>
+            <tbody data-rows></tbody>
+          </table>
+          <div class="plan">
+            <div class="plan-head"><span class="label">Aim's plan</span><span data-plan-note></span></div>
+            <ol data-trades></ol>
+            <button class="btn btn-ink" data-run hidden>Run the crew</button>
+          </div>
+        </div>
+        <p class="panel-msg" data-msg role="status"></p>
+      </div>
+    </section>
+
+    <section class="crew" id="crew">
+      <p class="kicker">The crew</p>
+      <h2>Four agents. One quiver.</h2>
+      <div class="cards">
+        <article class="card">
+          <canvas class="portrait" data-portrait="aim" width="96" height="96"></canvas>
+          <h3>Aim</h3>
+          <p class="role">Trader</p>
+          <p>Keeps a portfolio of tokenized stocks on target. Rebalances when prices drift.</p>
+        </article>
+        <article class="card">
+          <canvas class="portrait" data-portrait="yield" width="96" height="96"></canvas>
+          <h3>Yield</h3>
+          <p class="role">Lender</p>
+          <p>Puts idle USDG and stock tokens to work in lending markets.</p>
+        </article>
+        <article class="card">
+          <canvas class="portrait" data-portrait="depth" width="96" height="96"></canvas>
+          <h3>Depth</h3>
+          <p class="role">Market maker</p>
+          <p>Provides liquidity to the busiest stock pools and earns the trading fees.</p>
+        </article>
+        <article class="card">
+          <canvas class="portrait" data-portrait="scout" width="96" height="96"></canvas>
+          <h3>Scout</h3>
+          <p class="role">Data</p>
+          <p>Reads every pool and sells the read to other agents, paid in USDG over x402.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="how">
+      <p class="kicker">How it works</p>
+      <h2>Set it once. The crew does the rest.</h2>
+      <ol class="steps">
+        <li><span>01</span><h3>Connect</h3><p>Your wallet, your keys. Every trade is signed by you.</p></li>
+        <li><span>02</span><h3>Pick a course</h3><p>Calm, Steady or Bold. Or set your own rules for weights and cash.</p></li>
+        <li><span>03</span><h3>Run the crew</h3><p>Aim plans the trades, you approve, and every move shows up on the floor.</p></li>
+      </ol>
+    </section>
+
+    <section class="token" id="token">
+      <p class="kicker">$QUIVER</p>
+      <h2>Every fee feeds the burn.</h2>
+      <p class="lede">Trades, loans, liquidity and data sales all pay a small fee in USDG. It buys $QUIVER and sends it to the dead address.</p>
+      <div class="tiers">
+        <div class="tier"><h3>Nock</h3><p class="amt">Any holder</p><p>Aim on Calm and Steady</p></div>
+        <div class="tier"><h3>Archer</h3><p class="amt">100,000 $QUIVER</p><p>Adds Yield, Bold course, lower fees</p></div>
+        <div class="tier"><h3>Marksman</h3><p class="amt">1,000,000 $QUIVER</p><p>The full crew, custom courses, lowest fees</p></div>
+      </div>
+      <div class="ca">
+        <span class="ca-label">CA</span>
+        <code data-ca>Announced on @quiveragents</code>
+        <button class="btn btn-line btn-sm" data-copy disabled>Copy</button>
+      </div>
+    </section>
+
+    <section class="faq">
+      <p class="kicker">FAQ</p>
+      <details><summary>What is Quiver?</summary><p>A crew of AI agents that run a portfolio of tokenized stocks for you: Aim trades, Yield puts cash to work, Depth makes markets and Scout sells the data that keeps them sharp.</p></details>
+      <details><summary>Do you hold my funds?</summary><p>Never. Everything stays in your wallet, and every swap is signed by you.</p></details>
+      <details><summary>What does the crew trade?</summary><p>Stock tokens like NVDA, TSLA, AAPL and SPY, priced live on-chain and routed through Uniswap for the best price.</p></details>
+      <details><summary>What do Calm, Steady and Bold mean?</summary><p>Each course is a target mix. Calm leans on the S&amp;P with a big cash buffer. Bold leans on high-growth names. Aim rebalances when you drift off course.</p></details>
+      <details><summary>Do I need $QUIVER?</summary><p>No. Holding $QUIVER lowers your fees and unlocks more of the crew.</p></details>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="brand"><img src="/assets/q.svg" alt="" width="22" height="22"><span>QUIVER</span></div>
+    <nav><a href="https://x.com/quiveragents" target="_blank" rel="noopener">X</a><a href="#app">App</a><a href="#floor">Floor</a></nav>
+    <p>Stock tokens are not offered to US persons.</p>
+  </footer>
+
+  <script src="/assets/floor.js"></script>
+  <script src="/assets/app.js"></script>
 </body>
 </html>

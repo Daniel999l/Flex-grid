@@ -1,0 +1,14 @@
+{
+  "name": "quiver",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "mongodb": "^6.10.0"
+  }
+}
