@@ -5,7 +5,7 @@ import { COURSES } from '../lib/plan.js';
 export default async function handler(req, res) {
   try {
     const data = await currentState();
-    send(res, 200, { ...data, courses: COURSES, ca: process.env.QUIVER_CA || '' }, {
+    send(res, 200, { ...data, courses: COURSES, ca: process.env.QUIVER_CA || '0xe33dc97ec74b88604a718c8f1d9dc229420c79bd' }, {
       'cache-control': 'public, s-maxage=20, stale-while-revalidate=60',
     });
   } catch (err) {
