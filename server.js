@@ -15,6 +15,7 @@ const routes = {
   '/api/state': () => import('./api/state.js'),
   '/api/portfolio': () => import('./api/portfolio.js'),
   '/api/swap': () => import('./api/swap.js'),
+  '/api/claim': () => import('./api/claim.js'),
 };
 const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',

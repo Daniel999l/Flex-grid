@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiver · Claim fees</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#F7F2E8">
+  <link rel="icon" href="/assets/q.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <style>
+    .claim { max-width: 720px; }
+    .row { display: flex; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
+    .row span:first-child { color: var(--muted); }
+    .row code { font: 400 13px ui-monospace, Menlo, monospace; overflow-wrap: anywhere; text-align: right; }
+    .big { margin: 6px 0 22px; font: 600 64px/1 var(--serif); }
+    .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+    .tok { display: flex; gap: 10px; margin-top: 28px; }
+    .tok input { flex: 1; }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/"><img src="/assets/q.svg" alt="" width="26" height="26"><span>QUIVER</span></a>
+    <button class="btn btn-ink buy" data-connect>Connect wallet</button>
+  </header>
+
+  <main>
+    <section class="claim">
+      <p class="kicker">Creator fees</p>
+      <h2>Collect and claim.</h2>
+      <p class="lede">Read live from the Pons contracts. No waiting on an indexer.</p>
+
+      <form class="tok" data-tok>
+        <input name="token" value="0xe33dc97ec74b88604a718c8f1d9dc229420c79bd" spellcheck="false" aria-label="Token contract address">
+        <button class="btn btn-line" type="submit">Load</button>
+      </form>
+
+      <div class="panel" style="margin-top:24px">
+        <div class="panel-body">
+          <span class="label">Claimable</span>
+          <p class="big" data-claimable>—</p>
+          <div class="row"><span>Pending on the curve</span><b data-pending>—</b></div>
+          <div class="row"><span>Status</span><b data-status>—</b></div>
+          <div class="row"><span>Curve</span><code data-curve>—</code></div>
+          <div class="row"><span>Fee escrow</span><code data-escrow>—</code></div>
+          <div class="row"><span>Creator</span><code data-creator>—</code></div>
+          <div class="actions">
+            <button class="btn btn-line" data-collect disabled>Collect curve fees</button>
+            <button class="btn btn-ink" data-claim disabled>Claim</button>
+          </div>
+        </div>
+        <p class="panel-msg" data-msg role="status"></p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+  (() => {
+    const $ = (s) => document.querySelector(s);
+    const CHAIN = '0x1237';
+    const EXPLORER = 'https://robinhoodchain.blockscout.com';
+    const eth = () => window.ethereum;
+    const rpc = (method, params = []) => eth().request({ method, params });
+    const short = (a) => a.slice(0, 6) + '…' + a.slice(-4);
+    const fmt = (wei) => (Number(BigInt(wei)) / 1e18).toLocaleString('en-US', { maximumFractionDigits: 6 });
+    const msg = (t) => { $('[data-msg]').textContent = t || ''; };
+    let wallet = null, token = $('[name=token]').value, status = null, busy = false, keepUntil = 0;
+
+    const q = new URLSearchParams(location.search).get('token');
+    if (q) { token = q; $('[name=token]').value = q; }
+
+    async function load() {
+      try {
+        const res = await fetch(`/api/claim?token=${token}${wallet ? '&wallet=' + wallet : ''}`, { cache: 'no-store' });
+        const d = await res.json();
+        if (!res.ok) throw new Error(d.error);
+        status = d;
+        const unit = d.quote === 'ETH' ? ' ETH' : '';
+        $('[data-claimable]').textContent = wallet ? fmt(d.claimable) + unit : 'Connect wallet';
+        $('[data-pending]').textContent = fmt(d.pending) + unit;
+        $('[data-status]').textContent = d.graduated ? 'Graduated' : 'On the curve';
+        $('[data-curve]').textContent = d.curve;
+        $('[data-escrow]').textContent = d.escrow;
+        $('[data-creator]').textContent = d.creator;
+        $('[data-collect]').disabled = busy || !d.actions.collect;
+        $('[data-claim]').disabled = busy || !d.actions.claim;
+        if (Date.now() < keepUntil) return;
+        if (!busy && wallet && !d.isCreator && BigInt(d.claimable) === 0n) msg('This wallet is not the creator of this token.');
+        else if (!busy && wallet && !d.actions.claim && !d.actions.collect) msg('Nothing to collect or claim right now. Fees land here as people trade.');
+        else if (!busy) msg('');
+      } catch (err) {
+        msg(err.message || 'Could not load.');
+      }
+    }
+
+    async function ensureChain() {
+      if ((await rpc('eth_chainId')) === CHAIN) return;
+      try { await rpc('wallet_switchEthereumChain', [{ chainId: CHAIN }]); }
+      catch (err) {
+        if (err.code !== 4902) throw err;
+        await rpc('wallet_addEthereumChain', [{ chainId: CHAIN, chainName: 'Robinhood Chain', nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 }, rpcUrls: ['https://rpc.mainnet.chain.robinhood.com'], blockExplorerUrls: [EXPLORER] }]);
+      }
+    }
+
+    async function connect() {
+      if (!eth()) return msg('No wallet found. Open this page in MetaMask, Rabby or any browser wallet.');
+      try {
+        [wallet] = await rpc('eth_requestAccounts');
+        await ensureChain();
+        $('[data-connect]').textContent = short(wallet);
+        load();
+      } catch (err) { msg(err.code === 4001 ? 'Connection cancelled.' : err.message); }
+    }
+
+    async function send(action, label) {
+      if (busy || !status?.actions[action]) return;
+      busy = true;
+      $('[data-collect]').disabled = $('[data-claim]').disabled = true;
+      try {
+        await ensureChain();
+        msg(`${label}: confirm in your wallet…`);
+        const tx = status.actions[action];
+        const hash = await rpc('eth_sendTransaction', [{ from: wallet, to: tx.to, data: tx.data }]);
+        msg(`${label}: waiting for confirmation…`);
+        for (let i = 0; i < 120; i++) {
+          const r = await rpc('eth_getTransactionReceipt', [hash]).catch(() => null);
+          if (r) { if (r.status !== '0x1') throw new Error('Transaction reverted'); break; }
+          await new Promise((r) => setTimeout(r, 1500));
+        }
+        keepUntil = Date.now() + 60000;
+        $('[data-msg]').innerHTML = `${label}: done. <a target="_blank" rel="noopener" href="${EXPLORER}/tx/${hash}">View transaction ↗</a>`;
+      } catch (err) {
+        msg(err.code === 4001 ? 'Cancelled.' : err.message || 'Failed.');
+      } finally {
+        busy = false;
+        load();
+      }
+    }
+
+    $('[data-connect]').addEventListener('click', () => (wallet ? null : connect()));
+    $('[data-collect]').addEventListener('click', () => send('collect', 'Collect'));
+    $('[data-claim]').addEventListener('click', () => send('claim', 'Claim'));
+    $('[data-tok]').addEventListener('submit', (e) => { e.preventDefault(); token = $('[name=token]').value.trim(); load(); });
+    if (eth()) {
+      eth().on?.('accountsChanged', (a) => { wallet = a[0] || null; $('[data-connect]').textContent = wallet ? short(wallet) : 'Connect wallet'; load(); });
+      rpc('eth_accounts').then((a) => { if (a[0]) { wallet = a[0]; $('[data-connect]').textContent = short(wallet); } load(); }).catch(load);
+    } else load();
+    setInterval(() => !busy && load(), 10000);
+  })();
+  </script>
+</body>
+</html>
